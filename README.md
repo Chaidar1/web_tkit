@@ -11,7 +11,7 @@ Website profil sekolah Taman Kanak-Kanak berbasis web yang dibangun dengan **Fas
 
 - **Backend:** FastAPI, Python, SQLAlchemy
 - **Frontend:** ReactJS, Axios, Tailwind CSS
-- **Database:** MySQL / PostgreSQL
+- **Database:** PostgreSQL
 - **Tools:** Git, Postman, Figma
 
 ## Fitur Utama
