@@ -1,0 +1,9 @@
+from .auth import router as auth_router
+from .news import router as news_router
+from .programs import router as programs_router
+from .hero import router as hero_router
+from .welcome import router as welcome_router
+from .about import router as about_router
+from .contact import router as contact_router
+from .footer import router as footer_router
+from .admin import router as admin_router
