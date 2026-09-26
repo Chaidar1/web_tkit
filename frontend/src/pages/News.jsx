@@ -159,8 +159,8 @@ const styles = {
   // ==================== NEWS GRID ====================
   newsGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)',
-    gap: '35px',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(270px, 1fr))',
+    gap: '28px',
   },
   // ==================== NEWS CARD ====================
   newsCard: {

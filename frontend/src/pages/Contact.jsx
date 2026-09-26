@@ -75,8 +75,8 @@ const styles = {
   },
   contactWrapper: {
     display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gap: '45px',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+    gap: '30px',
   },
   infoCard: {
     background: '#ffffff',

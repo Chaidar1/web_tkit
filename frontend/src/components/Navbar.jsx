@@ -9,6 +9,7 @@ import {
   FaBars,
   FaTimes
 } from 'react-icons/fa';
+import { useResponsive } from '../hooks/useResponsive';
 
 const styles = {
   navbar: {
@@ -21,7 +22,6 @@ const styles = {
     backdropFilter: 'blur(10px)',
     transition: 'all 0.3s ease',
   },
-  // ==================== MAIN NAVBAR ====================
   navContainer: {
     maxWidth: '1200px',
     margin: '0 auto',
@@ -30,11 +30,10 @@ const styles = {
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  // ==================== LOGO ====================
   logo: {
     display: 'flex',
     alignItems: 'center',
-    gap: '14px',
+    gap: '12px',
     textDecoration: 'none',
     transition: 'all 0.2s ease',
   },
@@ -86,9 +85,8 @@ const styles = {
     letterSpacing: '0.8px',
     textTransform: 'uppercase',
   },
-  // ==================== TOGGLE BUTTON ====================
   navToggle: {
-    display: 'none',
+    display: 'flex',
     background: 'linear-gradient(135deg, #82D7DE, #5BC0C9)',
     border: 'none',
     fontSize: '1.2rem',
@@ -97,13 +95,12 @@ const styles = {
     padding: '0',
     borderRadius: '12px',
     transition: 'all 0.3s ease',
-    width: '46px',
-    height: '46px',
+    width: '44px',
+    height: '44px',
     alignItems: 'center',
     justifyContent: 'center',
     boxShadow: '0 4px 15px rgba(130, 215, 222, 0.3)',
   },
-  // ==================== NAV MENU ====================
   navMenu: {
     display: 'flex',
     listStyle: 'none',
@@ -117,6 +114,7 @@ const styles = {
   },
   navItem: {
     position: 'relative',
+    width: '100%',
   },
   navLink: {
     textDecoration: 'none',
@@ -145,71 +143,19 @@ const styles = {
   activeLinkIcon: {
     color: '#ffffff',
   },
-  // ==================== MOBILE ====================
-  '@media (max-width: 968px)': {
-    logoText: { fontSize: '1rem' },
-    logoSubText: { fontSize: '0.55rem' },
-    logoImage: { height: '50px' },
-  },
-  '@media (max-width: 768px)': {
-    navToggle: { 
-      display: 'flex',
-    },
-    navMenu: {
-      display: 'none',
-      position: 'absolute',
-      top: '100%',
-      left: 0,
-      right: 0,
-      background: '#ffffff',
-      flexDirection: 'column',
-      padding: '20px 20px 28px',
-      gap: '6px',
-      boxShadow: '0 20px 40px rgba(130, 215, 222, 0.15), 0 4px 12px rgba(0,0,0,0.04)',
-      zIndex: 999,
-      borderTop: '2px solid rgba(130, 215, 222, 0.15)',
-      borderRadius: '0 0 20px 20px',
-      marginTop: '0',
-    },
-    navMenuActive: { 
-      display: 'flex',
-    },
-    navLink: {
-      padding: '14px 18px',
-      borderRadius: '12px',
-      width: '100%',
-      fontSize: '0.95rem',
-      background: '#f8fdfe',
-      border: '1px solid rgba(130, 215, 222, 0.1)',
-    },
-    logoText: { fontSize: '0.85rem' },
-    logoSubText: { fontSize: '0.5rem' },
-    logoImage: { height: '44px' },
-    navContainer: { padding: '0.7rem 16px' },
-    activeLink: {
-      background: 'linear-gradient(135deg, #82D7DE, #5BC0C9)',
-      color: '#ffffff',
-      boxShadow: '0 4px 15px rgba(130, 215, 222, 0.3)',
-    },
-  },
 };
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [scrolled, setScrolled] = useState(false);
+  const { isMobile } = useResponsive();
   const location = useLocation();
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-      if (window.innerWidth > 768) {
-        setIsOpen(false);
-      }
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    if (!isMobile) {
+      setIsOpen(false);
+    }
+  }, [isMobile]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -219,7 +165,6 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Tutup menu saat pindah halaman
   useEffect(() => {
     setIsOpen(false);
   }, [location.pathname]);
@@ -241,33 +186,35 @@ const Navbar = () => {
         ? '0 4px 30px rgba(130, 215, 222, 0.2), 0 2px 8px rgba(0,0,0,0.06)' 
         : styles.navbar.boxShadow,
     }}>
-      <div style={styles.navContainer}>
+      <div style={{
+        ...styles.navContainer,
+        padding: isMobile ? '0.6rem 16px' : '0.8rem 20px'
+      }}>
         {/* Logo */}
         <Link to="/" style={styles.logo}>
           <div style={styles.logoImageWrapper}>
             <img 
               src="/Logo TK.png" 
               alt="Logo TK IT AR RAHMAN AL IKHLAS" 
-              style={styles.logoImage}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = '#82D7DE';
-                e.currentTarget.style.transform = 'scale(1.05) rotate(-2deg)';
-                e.currentTarget.style.boxShadow = '0 8px 25px rgba(130, 215, 222, 0.35)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(130, 215, 222, 0.25)';
-                e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
-                e.currentTarget.style.boxShadow = '0 4px 15px rgba(130, 215, 222, 0.15)';
+              style={{
+                ...styles.logoImage,
+                height: isMobile ? '44px' : '58px'
               }}
             />
           </div>
           <div style={styles.logoTextWrapper}>
-            <span style={styles.logoText}>
+            <span style={{
+              ...styles.logoText,
+              fontSize: isMobile ? '0.9rem' : '1.15rem'
+            }}>
               TK IT <span style={styles.logoTextHighlight}>AR RAHMAN</span>
             </span>
             <div style={styles.logoSubTextWrapper}>
               <span style={styles.logoSubTextLine}></span>
-              <span style={styles.logoSubText}>
+              <span style={{
+                ...styles.logoSubText,
+                fontSize: isMobile ? '0.52rem' : '0.62rem'
+              }}>
                 Al Ikhlas Sindangkerta
               </span>
             </div>
@@ -275,55 +222,59 @@ const Navbar = () => {
         </Link>
 
         {/* Mobile Toggle */}
-        <button 
-          style={styles.navToggle} 
-          onClick={() => setIsOpen(!isOpen)}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'scale(1.05)';
-            e.currentTarget.style.boxShadow = '0 6px 20px rgba(130, 215, 222, 0.4)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'scale(1)';
-            e.currentTarget.style.boxShadow = '0 4px 15px rgba(130, 215, 222, 0.3)';
-          }}
-          aria-label="Toggle menu"
-        >
-          {isOpen ? <FaTimes /> : <FaBars />}
-        </button>
+        {isMobile && (
+          <button 
+            style={styles.navToggle} 
+            onClick={() => setIsOpen(!isOpen)}
+            aria-label="Toggle menu"
+          >
+            {isOpen ? <FaTimes /> : <FaBars />}
+          </button>
+        )}
 
         {/* Nav Menu */}
         <ul style={{
           ...styles.navMenu,
-          ...(isOpen ? styles.navMenuActive : {}),
           ...(isMobile ? {
             display: isOpen ? 'flex' : 'none',
-          } : {})
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            right: 0,
+            background: '#ffffff',
+            flexDirection: 'column',
+            padding: '16px 20px 24px',
+            gap: '8px',
+            boxShadow: '0 20px 40px rgba(130, 215, 222, 0.2), 0 4px 12px rgba(0,0,0,0.04)',
+            zIndex: 999,
+            border: '1px solid rgba(130, 215, 222, 0.25)',
+            borderRadius: '0 0 20px 20px',
+            width: '100%',
+          } : {
+            display: 'flex',
+            flexDirection: 'row',
+          })
         }}>
           {navItems.map((item) => {
             const active = isActive(item.path);
             return (
-              <li key={item.path} style={styles.navItem}>
+              <li key={item.path} style={{
+                ...styles.navItem,
+                width: isMobile ? '100%' : 'auto'
+              }}>
                 <Link
                   to={item.path}
                   style={{
                     ...styles.navLink,
                     ...(active ? styles.activeLink : {}),
+                    ...(isMobile ? {
+                      padding: '12px 18px',
+                      width: '100%',
+                      background: active ? styles.activeLink.background : '#f8fdfe',
+                      border: '1px solid rgba(130, 215, 222, 0.15)',
+                    } : {})
                   }}
                   onClick={() => setIsOpen(false)}
-                  onMouseEnter={(e) => {
-                    if (!active && !isMobile) {
-                      e.currentTarget.style.color = '#82D7DE';
-                      e.currentTarget.style.background = 'rgba(130, 215, 222, 0.08)';
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!active && !isMobile) {
-                      e.currentTarget.style.color = '#4A5568';
-                      e.currentTarget.style.background = 'transparent';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                    }
-                  }}
                 >
                   <span style={{
                     ...styles.navLinkIcon,
@@ -342,4 +293,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default Navbar;

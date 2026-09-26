@@ -163,8 +163,8 @@ const styles = {
   },
   welcomeWrapper: {
     display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gap: '70px',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+    gap: '35px',
     alignItems: 'center',
   },
   welcomeImageWrapper: {
@@ -236,8 +236,8 @@ const styles = {
   },
   programsGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
-    gap: '30px',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(270px, 1fr))',
+    gap: '24px',
     marginTop: '30px',
   },
   programsScrollArea: {
@@ -448,8 +448,8 @@ const styles = {
   },
   newsGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)',
-    gap: '30px',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(270px, 1fr))',
+    gap: '24px',
     marginTop: '30px',
   },
   newsScrollArea: {

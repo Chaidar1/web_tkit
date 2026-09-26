@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { adminHeroAPI, authAPI } from '../../services/adminApi';
 import AdminSidebar from '../../components/AdminSidebar';
+import { useResponsive } from '../../hooks/useResponsive';
 import { 
   FaImages, 
   FaGraduationCap, 
@@ -165,6 +166,7 @@ const AdminDashboard = () => {
   const [heroCount, setHeroCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { isMobile } = useResponsive();
   const username = localStorage.getItem('admin_username') || 'Admin TK';
 
   useEffect(() => {
@@ -199,14 +201,32 @@ const AdminDashboard = () => {
   return (
     <div style={styles.container}>
       <AdminSidebar />
-      <main style={styles.mainContent}>
-        <div style={styles.header}>
+      <main style={{
+        ...styles.mainContent,
+        marginLeft: isMobile ? 0 : '270px',
+        padding: isMobile ? '16px 14px 80px' : '24px 30px',
+        width: isMobile ? '100%' : 'calc(100% - 270px)',
+      }}>
+        <div style={{
+          ...styles.header,
+          flexDirection: isMobile ? 'column' : 'row',
+          alignItems: isMobile ? 'flex-start' : 'center',
+          gap: isMobile ? '14px' : '0',
+          padding: isMobile ? '16px' : '18px 28px',
+        }}>
           <div>
-            <h1 style={styles.headerTitle}>Dashboard Admin</h1>
+            <h1 style={{
+              ...styles.headerTitle,
+              fontSize: isMobile ? '1.2rem' : '1.45rem',
+            }}>Dashboard Admin</h1>
             <p style={styles.headerSubtitle}>Panel Administrasi TK IT AR RAHMAN AL IKHLAS</p>
           </div>
 
-          <div style={styles.userSection}>
+          <div style={{
+            ...styles.userSection,
+            width: isMobile ? '100%' : 'auto',
+            justifyContent: isMobile ? 'space-between' : 'flex-end',
+          }}>
             <div style={styles.userInfo}>
               <FaUserCircle style={{ color: '#0F4C5C', fontSize: '1.2rem' }} />
               <span>{username}</span>

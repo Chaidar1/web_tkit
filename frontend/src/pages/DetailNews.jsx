@@ -83,8 +83,8 @@ const styles = {
   },
   contentWrapper: {
     display: 'grid',
-    gridTemplateColumns: '1fr 320px',
-    gap: '50px',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+    gap: '30px',
     marginBottom: '60px',
   },
   mainContent: {

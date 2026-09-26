@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { aboutAPI } from '../services/api';
+import { useResponsive } from '../hooks/useResponsive';
 import { 
   FaBookOpen, 
   FaEye, 
@@ -412,6 +413,7 @@ const styles = {
 const About = () => {
   const [about, setAbout] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { isMobile, isTablet } = useResponsive();
 
   useEffect(() => {
     const fetchAbout = async () => {

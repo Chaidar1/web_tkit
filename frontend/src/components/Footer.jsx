@@ -18,6 +18,7 @@ import {
   FaArrowRight,
   FaStar
 } from 'react-icons/fa';
+import { useResponsive } from '../hooks/useResponsive';
 
 const styles = {
   footer: {
@@ -57,8 +58,8 @@ const styles = {
   },
   content: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-    gap: '45px',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+    gap: '35px',
     marginBottom: '45px',
   },
   logoSection: {
@@ -249,7 +250,6 @@ const styles = {
     transition: 'all 0.3s ease',
     color: '#82D7DE',
   },
-  // ==================== BOTTOM (UPDATED) ====================
   bottomWrapper: {
     borderTop: '1px solid rgba(130, 215, 222, 0.15)',
     paddingTop: '25px',
@@ -271,24 +271,6 @@ const styles = {
   bottomBrand: {
     color: '#82D7DE',
     fontWeight: '700',
-  },
-  '@media (max-width: 768px)': {
-    footer: { padding: '50px 0 25px', marginTop: '60px' },
-    content: { gap: '35px', marginBottom: '30px' },
-    logoImageWrapper: { width: '52px', height: '52px' },
-    logoText: { fontSize: '0.95rem' },
-    logoSubText: { fontSize: '0.65rem' },
-    heading4: { fontSize: '1rem', marginBottom: '18px' },
-    description: { fontSize: '0.85rem' },
-    contactItem: { fontSize: '0.85rem' },
-    quickLink: { fontSize: '0.85rem' },
-    bottom: {
-      fontSize: '0.78rem',
-      flexDirection: 'column',
-      gap: '6px',
-    },
-    decorCircle1: { display: 'none' },
-    decorCircle2: { display: 'none' },
   },
 };
 

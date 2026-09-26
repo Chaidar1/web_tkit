@@ -72,8 +72,8 @@ const styles = {
   // ==================== PROGRAMS GRID ====================
   programsGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
-    gap: '35px',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(270px, 1fr))',
+    gap: '28px',
   },
   // ==================== CARD ====================
   card: {

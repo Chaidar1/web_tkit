@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   FaBook,
@@ -10,9 +10,12 @@ import {
   FaUserShield,
   FaArrowRight,
   FaUserTie,
-  FaExternalLinkAlt
+  FaExternalLinkAlt,
+  FaBars,
+  FaTimes
 } from 'react-icons/fa';
 import { MdDashboard } from 'react-icons/md';
+import { useResponsive } from '../hooks/useResponsive';
 
 const styles = {
   sidebar: {
@@ -24,14 +27,46 @@ const styles = {
     top: 0,
     bottom: 0,
     overflowY: 'auto',
-    zIndex: 100,
+    zIndex: 1100,
     boxShadow: '4px 0 25px rgba(8, 47, 56, 0.25)',
     display: 'flex',
     flexDirection: 'column',
+    transition: 'transform 0.3s ease-in-out',
+  },
+  overlay: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: 'rgba(8, 47, 56, 0.6)',
+    backdropFilter: 'blur(4px)',
+    zIndex: 1050,
+  },
+  mobileToggleBtn: {
+    position: 'fixed',
+    bottom: '20px',
+    right: '20px',
+    width: '52px',
+    height: '52px',
+    borderRadius: '50%',
+    background: 'linear-gradient(135deg, #0F4C5C, #82D7DE)',
+    color: '#ffffff',
+    border: 'none',
+    boxShadow: '0 8px 25px rgba(15, 76, 92, 0.4)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '1.4rem',
+    cursor: 'pointer',
+    zIndex: 1000,
   },
   sidebarHeader: {
-    padding: '24px 20px 18px',
+    padding: '20px 18px',
     borderBottom: '1px solid rgba(255,255,255,0.08)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   sidebarLogoWrapper: {
     display: 'flex',
@@ -39,7 +74,7 @@ const styles = {
     gap: '12px',
   },
   sidebarLogo: {
-    height: '46px',
+    height: '42px',
     width: 'auto',
     borderRadius: '10px',
     background: '#ffffff',
@@ -47,19 +82,30 @@ const styles = {
     boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
   },
   sidebarTitle: {
-    fontSize: '0.95rem',
+    fontSize: '0.92rem',
     fontWeight: '700',
     color: '#ffffff',
     letterSpacing: '0.5px',
     lineHeight: 1.2,
   },
   sidebarSubtitle: {
-    fontSize: '0.68rem',
+    fontSize: '0.65rem',
     color: '#82D7DE',
     fontWeight: '600',
     letterSpacing: '0.3px',
     marginTop: '3px',
     lineHeight: 1.2,
+  },
+  closeBtn: {
+    background: 'transparent',
+    border: 'none',
+    color: 'rgba(255, 255, 255, 0.8)',
+    fontSize: '1.2rem',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '4px',
   },
   nav: {
     padding: '16px 14px',
@@ -142,10 +188,6 @@ const styles = {
     color: 'rgba(255,255,255,0.5)',
     background: 'rgba(0,0,0,0.1)',
   },
-  scrollbar: {
-    scrollbarWidth: 'thin',
-    scrollbarColor: 'rgba(255,255,255,0.2) transparent',
-  },
 };
 
 const navItems = [
@@ -170,91 +212,113 @@ const navItems = [
 ];
 
 const AdminSidebar = () => {
+  const [isOpenMobile, setIsOpenMobile] = useState(false);
   const location = useLocation();
+  const { isMobile } = useResponsive();
 
   const isActive = (path) => location.pathname === path;
 
   return (
-    <aside style={{ ...styles.sidebar, ...styles.scrollbar }}>
-      <div style={styles.sidebarHeader}>
-        <div style={styles.sidebarLogoWrapper}>
-          <img src="/Logo TK.png" alt="Logo TK" style={styles.sidebarLogo} />
-          <div>
-            <div style={styles.sidebarTitle}>Admin Panel</div>
-            <div style={styles.sidebarSubtitle}>TK IT AR RAHMAN AL IKHLAS</div>
-          </div>
-        </div>
-      </div>
-      
-      <nav style={styles.nav}>
-        {navItems.map((section) => (
-          <div key={section.section} style={styles.navSection}>
-            <div style={styles.navSectionLabel}>{section.section}</div>
-            {section.items.map((item) => {
-              const active = isActive(item.path);
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  style={{
-                    ...styles.navItem,
-                    ...(active ? styles.navItemActive : {}),
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!active) {
-                      e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
-                      e.currentTarget.style.color = '#ffffff';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!active) {
-                      e.currentTarget.style.background = 'transparent';
-                      e.currentTarget.style.color = 'rgba(255,255,255,0.8)';
-                    }
-                  }}
-                >
-                  <span style={{
-                    ...styles.navIcon,
-                    ...(active ? styles.navIconActive : {}),
-                  }}>
-                    {item.icon}
-                  </span>
-                  <span style={styles.navLabel}>{item.label}</span>
-                  <FaArrowRight style={{
-                    ...styles.navArrow,
-                    ...(active ? styles.navArrowActive : {}),
-                  }} />
-                </Link>
-              );
-            })}
-          </div>
-        ))}
+    <>
+      {/* Overlay Mobile */}
+      {isMobile && isOpenMobile && (
+        <div 
+          style={styles.overlay} 
+          onClick={() => setIsOpenMobile(false)}
+        />
+      )}
 
-        <Link 
-          to="/" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          style={styles.externalLink}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(130, 215, 222, 0.2)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
-          }}
+      {/* Floating Toggle Button for Mobile */}
+      {isMobile && (
+        <button 
+          style={styles.mobileToggleBtn}
+          onClick={() => setIsOpenMobile(!isOpenMobile)}
+          aria-label="Toggle Admin Menu"
         >
-          <FaExternalLinkAlt style={{ fontSize: '0.8rem' }} />
-          <span>Lihat Website TK</span>
-        </Link>
-      </nav>
-      
-      <div style={styles.sidebarFooter}>
-        <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <FaUserShield style={{ fontSize: '0.85rem', color: '#82D7DE' }} />
-          <span>TK IT Admin</span>
-        </span>
-        <span style={{ opacity: 0.6 }}>v1.0</span>
-      </div>
-    </aside>
+          {isOpenMobile ? <FaTimes /> : <FaBars />}
+        </button>
+      )}
+
+      {/* Sidebar Drawer */}
+      <aside style={{ 
+        ...styles.sidebar,
+        transform: isMobile 
+          ? (isOpenMobile ? 'translateX(0)' : 'translateX(-100%)') 
+          : 'none'
+      }}>
+        <div style={styles.sidebarHeader}>
+          <div style={styles.sidebarLogoWrapper}>
+            <img src="/Logo TK.png" alt="Logo TK" style={styles.sidebarLogo} />
+            <div>
+              <div style={styles.sidebarTitle}>Admin Panel</div>
+              <div style={styles.sidebarSubtitle}>TK IT AR RAHMAN AL IKHLAS</div>
+            </div>
+          </div>
+          {isMobile && (
+            <button 
+              style={styles.closeBtn}
+              onClick={() => setIsOpenMobile(false)}
+            >
+              <FaTimes />
+            </button>
+          )}
+        </div>
+        
+        <nav style={styles.nav}>
+          {navItems.map((section) => (
+            <div key={section.section} style={styles.navSection}>
+              <div style={styles.navSectionLabel}>{section.section}</div>
+              {section.items.map((item) => {
+                const active = isActive(item.path);
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    style={{
+                      ...styles.navItem,
+                      ...(active ? styles.navItemActive : {}),
+                    }}
+                    onClick={() => {
+                      if (isMobile) setIsOpenMobile(false);
+                    }}
+                  >
+                    <span style={{
+                      ...styles.navIcon,
+                      ...(active ? styles.navIconActive : {}),
+                    }}>
+                      {item.icon}
+                    </span>
+                    <span style={styles.navLabel}>{item.label}</span>
+                    <FaArrowRight style={{
+                      ...styles.navArrow,
+                      ...(active ? styles.navArrowActive : {}),
+                    }} />
+                  </Link>
+                );
+              })}
+            </div>
+          ))}
+
+          <Link 
+            to="/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            style={styles.externalLink}
+          >
+            <FaExternalLinkAlt style={{ fontSize: '0.8rem' }} />
+            <span>Lihat Website TK</span>
+          </Link>
+        </nav>
+        
+        <div style={styles.sidebarFooter}>
+          <span style={{ display: 'flex', opacity: 0.9, alignItems: 'center', gap: '6px' }}>
+            <FaUserShield style={{ fontSize: '0.85rem', color: '#82D7DE' }} />
+            <span>TK IT Admin</span>
+          </span>
+          <span style={{ opacity: 0.6 }}>v1.0</span>
+        </div>
+      </aside>
+    </>
   );
 };
 
