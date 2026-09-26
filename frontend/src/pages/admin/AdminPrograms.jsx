@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { adminProgramsAPI, uploadAPI, authAPI } from '../../services/adminApi';
 import AdminSidebar from '../../components/AdminSidebar';
+import LogoutModal from '../../components/LogoutModal';
+import { toast } from 'react-toastify';
 import { 
   FaPlus, 
   FaEdit, 
@@ -12,7 +14,6 @@ import {
   FaCheckCircle, 
   FaTimesCircle,
   FaImage,
-  FaSync,
   FaTimes
 } from 'react-icons/fa';
 
@@ -414,6 +415,7 @@ const styles = {
 const AdminPrograms = () => {
   const [programs, setPrograms] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [editingProgram, setEditingProgram] = useState(null);
   const [formData, setFormData] = useState({
     title: '',
@@ -583,11 +585,11 @@ const AdminPrograms = () => {
     });
   };
 
-  const handleLogout = () => {
-    if (window.confirm('Apakah Anda ingin keluar dari panel admin?')) {
-      authAPI.logout();
-      navigate('/admin/login');
-    }
+  // ==================== LOGOUT HANDLER (menggunakan LogoutModal) ====================
+  const handleConfirmLogout = () => {
+    authAPI.logout();
+    toast.success('Berhasil keluar dari sesi admin.');
+    navigate('/admin/login');
   };
 
   const getImageUrl = (url) => {
@@ -599,6 +601,11 @@ const AdminPrograms = () => {
   return (
     <div style={styles.container}>
       <AdminSidebar />
+      <LogoutModal 
+        isOpen={showLogoutModal} 
+        onClose={() => setShowLogoutModal(false)} 
+        onConfirm={handleConfirmLogout} 
+      />
       <div style={styles.mainContent}>
         <div style={styles.header}>
           <div style={styles.headerLeft}>
@@ -611,7 +618,11 @@ const AdminPrograms = () => {
               <FaUserCircle style={{ color: '#0F4C5C', fontSize: '1.2rem' }} />
               <span>{username}</span>
             </div>
-            <button onClick={handleLogout} style={styles.logoutBtn} title="Keluar">
+            <button 
+              onClick={() => setShowLogoutModal(true)} 
+              style={styles.logoutBtn} 
+              title="Keluar"
+            >
               <FaSignOutAlt /> Keluar
             </button>
           </div>
@@ -623,9 +634,6 @@ const AdminPrograms = () => {
               Total Program: <strong>{programs.length}</strong> program terdaftar
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
-              <button style={styles.refreshBtn} onClick={fetchPrograms} title="Segarkan Data">
-                <FaSync /> Muat Ulang
-              </button>
               <button style={styles.addBtn} onClick={() => { resetForm(); setShowModal(true); }}>
                 <FaPlus /> Tambah Program Baru
               </button>

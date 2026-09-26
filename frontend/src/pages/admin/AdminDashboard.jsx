@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { adminHeroAPI, authAPI } from '../../services/adminApi';
 import AdminSidebar from '../../components/AdminSidebar';
+import LogoutModal from '../../components/LogoutModal';
 import { useResponsive } from '../../hooks/useResponsive';
+import { toast } from 'react-toastify';
 import { 
   FaImages, 
   FaGraduationCap, 
@@ -165,6 +167,7 @@ const styles = {
 const AdminDashboard = () => {
   const [heroCount, setHeroCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const navigate = useNavigate();
   const { isMobile } = useResponsive();
   const username = localStorage.getItem('admin_username') || 'Admin TK';
@@ -193,14 +196,20 @@ const AdminDashboard = () => {
     fetchStats();
   }, [navigate]);
 
-  const handleLogout = () => {
+  const handleConfirmLogout = () => {
     authAPI.logout();
+    toast.success('Berhasil keluar dari sesi admin.');
     navigate('/admin/login');
   };
 
   return (
     <div style={styles.container}>
       <AdminSidebar />
+      <LogoutModal 
+        isOpen={showLogoutModal} 
+        onClose={() => setShowLogoutModal(false)} 
+        onConfirm={handleConfirmLogout} 
+      />
       <main style={{
         ...styles.mainContent,
         marginLeft: isMobile ? 0 : '270px',
@@ -231,7 +240,7 @@ const AdminDashboard = () => {
               <FaUserCircle style={{ color: '#0F4C5C', fontSize: '1.2rem' }} />
               <span>{username}</span>
             </div>
-            <button onClick={handleLogout} style={styles.logoutBtn}>
+            <button onClick={() => setShowLogoutModal(true)} style={styles.logoutBtn}>
               <FaSignOutAlt /> Keluar
             </button>
           </div>

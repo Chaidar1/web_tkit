@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { adminAboutAPI, authAPI } from '../../services/adminApi';
 import AdminSidebar from '../../components/AdminSidebar';
+import LogoutModal from '../../components/LogoutModal';
+import { toast } from 'react-toastify';
 
 import {
   FaSave,
@@ -42,6 +44,7 @@ const AdminAbout = () => {
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -317,16 +320,10 @@ const AdminAbout = () => {
     setSuccess('');
   };
 
-  const handleLogout = () => {
-    const confirmed = window.confirm(
-      'Apakah Anda ingin keluar dari panel admin?'
-    );
-
-    if (!confirmed) {
-      return;
-    }
-
+  // ==================== LOGOUT HANDLER (menggunakan LogoutModal) ====================
+  const handleConfirmLogout = () => {
     authAPI.logout();
+    toast.success('Berhasil keluar dari sesi admin.');
     navigate('/admin/login');
   };
 
@@ -421,6 +418,11 @@ const AdminAbout = () => {
   return (
     <div style={styles.container}>
       <AdminSidebar />
+      <LogoutModal 
+        isOpen={showLogoutModal} 
+        onClose={() => setShowLogoutModal(false)} 
+        onConfirm={handleConfirmLogout} 
+      />
 
       <main style={mainContentStyle}>
         {/* HEADER */}
@@ -445,7 +447,7 @@ const AdminAbout = () => {
 
             <button
               type="button"
-              onClick={handleLogout}
+              onClick={() => setShowLogoutModal(true)}
               style={styles.logoutBtn}
               title="Keluar dari Admin"
             >

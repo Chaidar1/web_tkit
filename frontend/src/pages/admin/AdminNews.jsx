@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { adminNewsAPI, uploadAPI, authAPI } from '../../services/adminApi';
 import AdminSidebar from '../../components/AdminSidebar';
+import LogoutModal from '../../components/LogoutModal';
+import { toast } from 'react-toastify';
 import {
   FaPlus,
   FaEdit,
@@ -423,6 +425,7 @@ const AdminNews = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const navigate = useNavigate();
   const username = localStorage.getItem('admin_username') || 'Admin TK';
 
@@ -592,11 +595,10 @@ const AdminNews = () => {
     });
   };
 
-  const handleLogout = () => {
-    if (window.confirm('Apakah Anda ingin keluar dari panel admin?')) {
-      authAPI.logout();
-      navigate('/admin/login');
-    }
+  const handleConfirmLogout = () => {
+    authAPI.logout();
+    toast.success('Berhasil keluar dari sesi admin.');
+    navigate('/admin/login');
   };
 
   const getImageUrl = (url) => {
@@ -645,6 +647,11 @@ const AdminNews = () => {
   return (
     <div style={styles.container}>
       <AdminSidebar />
+      <LogoutModal 
+        isOpen={showLogoutModal} 
+        onClose={() => setShowLogoutModal(false)} 
+        onConfirm={handleConfirmLogout} 
+      />
       <main style={styles.mainContent}>
         {/* HEADER */}
         <div style={styles.header}>
@@ -659,7 +666,7 @@ const AdminNews = () => {
               <FaUserCircle style={{ color: '#0F4C5C', fontSize: '1.2rem' }} />
               <span>{username}</span>
             </div>
-            <button onClick={handleLogout} style={styles.logoutBtn} title="Keluar dari Admin">
+            <button onClick={() => setShowLogoutModal(true)} style={styles.logoutBtn} title="Keluar dari Admin">
               <FaSignOutAlt />
               <span>Keluar</span>
             </button>

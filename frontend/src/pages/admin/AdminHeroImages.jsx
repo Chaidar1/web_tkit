@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { adminHeroAPI, authAPI } from '../../services/adminApi';
 import AdminSidebar from '../../components/AdminSidebar';
+import LogoutModal from '../../components/LogoutModal';
+import { toast } from 'react-toastify';
 import {
   FaPlus,
   FaEdit,
@@ -398,6 +400,7 @@ const styles = {
 const AdminHeroImages = () => {
   const [heroImages, setHeroImages] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [editingHero, setEditingHero] = useState(null);
   const [formData, setFormData] = useState({
     title: '',
@@ -556,11 +559,11 @@ const AdminHeroImages = () => {
     });
   };
 
-  const handleLogout = () => {
-    if (window.confirm('Apakah Anda ingin keluar dari panel admin?')) {
-      authAPI.logout();
-      navigate('/admin/login');
-    }
+  // ==================== LOGOUT HANDLER (menggunakan LogoutModal) ====================
+  const handleConfirmLogout = () => {
+    authAPI.logout();
+    toast.success('Berhasil keluar dari sesi admin.');
+    navigate('/admin/login');
   };
 
   const getImageUrl = (url) => {
@@ -574,6 +577,11 @@ const AdminHeroImages = () => {
   return (
     <div style={styles.container}>
       <AdminSidebar />
+      <LogoutModal 
+        isOpen={showLogoutModal} 
+        onClose={() => setShowLogoutModal(false)} 
+        onConfirm={handleConfirmLogout} 
+      />
       <main style={styles.mainContent}>
         <div style={styles.header}>
           <div style={styles.headerLeft}>
@@ -587,7 +595,11 @@ const AdminHeroImages = () => {
               <FaUserCircle style={{ color: '#0F4C5C', fontSize: '1.2rem' }} />
               <span>{username}</span>
             </div>
-            <button onClick={handleLogout} style={styles.logoutBtn} title="Keluar dari Admin">
+            <button 
+              onClick={() => setShowLogoutModal(true)} 
+              style={styles.logoutBtn} 
+              title="Keluar dari Admin"
+            >
               <FaSignOutAlt />
               <span>Keluar</span>
             </button>
